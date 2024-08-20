@@ -30,58 +30,9 @@
 
   const handleKeyDown = async (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
-      const [commandName, ...args] = command.split(' ');
-
-      if (import.meta.env.VITE_TRACKING_ENABLED === 'true') {
-        track(commandName, ...args);
-      }
-
-      const commandFunction = commands[commandName];
-
-      if (commandFunction) {
-        const output = await commandFunction(args);
-
-        if (commandName !== 'clear') {
-          $history = [...$history, { command, outputs: [output] }];
-        }
-      } else {
-        const output = `${commandName}: command not found`;
-
-        $history = [...$history, { command, outputs: [output] }];
-      }
-
+      console.log(command);
+      $history = [...$history, { command, outputs: ["output"] }];
       command = '';
-    } else if (event.key === 'ArrowUp') {
-      if (historyIndex < $history.length - 1) {
-        historyIndex++;
-
-        command = $history[$history.length - 1 - historyIndex].command;
-      }
-
-      event.preventDefault();
-    } else if (event.key === 'ArrowDown') {
-      if (historyIndex > -1) {
-        historyIndex--;
-        command =
-          historyIndex >= 0
-            ? $history[$history.length - 1 - historyIndex].command
-            : '';
-      }
-      event.preventDefault();
-    } else if (event.key === 'Tab') {
-      event.preventDefault();
-
-      const autoCompleteCommand = Object.keys(commands).find((cmd) =>
-        cmd.startsWith(command),
-      );
-
-      if (autoCompleteCommand) {
-        command = autoCompleteCommand;
-      }
-    } else if (event.ctrlKey && event.key === 'l') {
-      event.preventDefault();
-
-      $history = [];
     }
   };
 </script>
