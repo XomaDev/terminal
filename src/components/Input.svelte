@@ -9,6 +9,31 @@
   import { theme } from '../stores/theme';
   import { commands } from '../utils/commands';
 
+  let BANNER = `
+          _____                    _____                    _____
+         /\\    \\                  /\\    \\                  /\\    \\
+        /::\\    \\                /::\\    \\                /::\\    \\
+       /::::\\    \\               \\:::\\    \\              /::::\\    \\
+      /::::::\\    \\               \\:::\\    \\            /::::::\\    \\
+     /:::/\\:::\\    \\               \\:::\\    \\          /:::/\\:::\\    \\
+    /:::/__\\:::\\    \\               \\:::\\    \\        /:::/__\\:::\\    \\
+   /::::\\   \\:::\\    \\              /::::\\    \\      /::::\\   \\:::\\    \\
+  /::::::\\   \\:::\\    \\    ____    /::::::\\    \\    /::::::\\   \\:::\\    \\
+ /:::/\\:::\\   \\:::\\    \\  /\\   \\  /:::/\\:::\\    \\  /:::/\\:::\\   \\:::\\    \\
+/:::/__\\:::\\   \\:::\\____\\/::\\   \\/:::/  \\:::\\____\\/:::/  \\:::\\   \\:::\\____\\
+\\:::\\   \\:::\\   \\::/    /\\:::\\  /:::/    \\::/    /\\::/    \\:::\\  /:::/    /
+ \\:::\\   \\:::\\   \\/____/  \\:::\\/:::/    / \\/____/  \\/____/ \\:::\\/:::/    /
+  \\:::\\   \\:::\\    \\       \\::::::/    /                    \\::::::/    /
+   \\:::\\   \\:::\\____\\       \\::::/____/                      \\::::/    /
+    \\:::\\   \\::/    /        \\:::\\    \\                      /:::/    /
+     \\:::\\   \\/____/          \\:::\\    \\                    /:::/    /
+      \\:::\\    \\               \\:::\\    \\                  /:::/    /
+       \\:::\\____\\               \\:::\\____\\                /:::/    /
+        \\::/    /                \\::/    /                \\::/    /
+         \\/____/                  \\/____/                  \\/____/
+
+`
+
   let command = '';
   let historyIndex = -1;
 
@@ -18,13 +43,7 @@
     input.focus();
 
     if ($history.length === 0) {
-      const command = commands['banner'] as () => string;
-
-      if (command) {
-        const output = command();
-
-        $history = [...$history, { command: 'banner', outputs: [output] }];
-      }
+      $history = [...$history, { command: 'Welcome to Eia Playground!', outputs: [BANNER] }];
     }
   });
 
@@ -35,8 +54,8 @@
   const handleKeyDown = async (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
       console.log(command);
-      $history = [...$history, { command, outputs: ["output"] }];
-      console.log(main.eia(command));
+      let output = main.eia(command);
+      $history = [...$history, { command, outputs: [output] }];
       command = '';
     }
   };
