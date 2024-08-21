@@ -36,9 +36,8 @@
     if (event.key === 'Enter') {
       console.log(command);
       $history = [...$history, { command, outputs: ["output"] }];
+      console.log(main.eia(command));
       command = '';
-
-      main.eia.executeEia("meow");
     }
   };
 </script>
