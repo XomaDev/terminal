@@ -8,39 +8,15 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Web-based terminal powered by Svelte" />
-  <script type="text/javascript" charset="utf-8" src="https://ekita.hackclub.app/wasm/Eia64.wasm-runtime.js"></script>
+  <script type="text/javascript" charset="utf-8" src="https://ekita.hackclub.app/js/Eia64.js"></script>
 
   <title>Project Eia64</title>
 </head>
 
-<body class="min-h-screen font-mono antialiased">
-  <script>
-    // main()
-    let runner = null;
-    function init() {
-      TeaVM.wasm.load("wasm/Eia64.wasm", {
-        installImports(o, controller) {
-          function putwchars(address, count) {
-            let instance = controller.instance;
-            let memory = new Int8Array(instance.exports.memory.buffer);
-            let string = "";
-            for (let i = 0; i < count; ++i) {
-              string += $rt_putStdoutCustom(memory[address++]);
-            }
-          }
-          o.teavm.putwcharsOut = putwchars;
-          o.teavm.putwcharsErr = putwchars;
-        },
-      }).then(teavm => {
-        this.instance = teavm.instance;
-        runner = n => teavm.main([n.toString()]);
-        document.getElementById("run").disabled = false;
-      })
-    }
-    init();
-  </script>
-  <div id="app" class="h-screen p-4"></div>
-  <script type="module" src="/src/main.ts"></script>
+<body class="min-h-screen font-mono antialiased" onload="main()">
+<div id="app" class="h-screen p-4"></div>
+
+<script type="module" src="/src/main.ts"></script>
 </body>
 
 </html>
