@@ -1,9 +1,13 @@
+<script context="module" lang="ts">
+  // Declarations that are at the module level, like `declare`
+  declare const main: any;
+</script>
+
 <script lang="ts">
   import { afterUpdate, onMount } from 'svelte';
   import { history } from '../stores/history';
   import { theme } from '../stores/theme';
   import { commands } from '../utils/commands';
-  import { track } from '../utils/tracking';
 
   let command = '';
   let historyIndex = -1;
@@ -33,6 +37,8 @@
       console.log(command);
       $history = [...$history, { command, outputs: ["output"] }];
       command = '';
+
+      main.eia.executeEia("meow");
     }
   };
 </script>
