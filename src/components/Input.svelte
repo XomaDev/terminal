@@ -12,10 +12,10 @@
 
   let BANNER = `
           _____                    _____                    _____
-         /\\    \\                  /\\    \\                  /\\    \\                  Project Eia64 — X
-        /::\\    \\                /::\\    \\                /::\\    \\                 UI Fork — Y
+         /\\    \\                  /\\    \\                  /\\    \\                  Eia64 — 2.3
+        /::\\    \\                /::\\    \\                /::\\    \\                 An interpreted language
        /::::\\    \\               \\:::\\    \\              /::::\\    \\
-      /::::::\\    \\               \\:::\\    \\            /::::::\\    \\
+      /::::::\\    \\               \\:::\\    \\            /::::::\\    \\               [X] [Docs] [UI fork]
      /:::/\\:::\\    \\               \\:::\\    \\          /:::/\\:::\\    \\
     /:::/__\\:::\\    \\               \\:::\\    \\        /:::/__\\:::\\    \\
    /::::\\   \\:::\\    \\              /::::\\    \\      /::::\\   \\:::\\    \\
@@ -33,8 +33,9 @@
         \\::/    /                \\::/    /                \\::/    /
          \\/____/                  \\/____/                  \\/____/
 
-`.replace('X', `<a style="color: ${$theme.brightGreen.toString()}" href="https://github.com/XomaDev/Eia64" target="_blank">XomaDev/Eia64</a>`)
-.replace('Y', `<a style="color: ${$theme.brightGreen.toString()}" href="https://github.com/XomaDev/Terminal" target="_blank">XomaDev/Eia64</a>`)
+`.replace('X', `<a style="color: ${$theme.brightGreen.toString()}" href="https://github.com/XomaDev/Eia64" target="_blank">Project</a>`)
+.replace('Docs', `<a style="color: ${$theme.brightGreen.toString()}" href="https://eia.themelon.space" target="_blank">Docs</a>`)
+.replace('UI fork', `<a style="color: ${$theme.brightGreen.toString()}" href="https://github.com/XomaDev/Terminal" target="_blank">UI fork</a>`)
 
   let command = '';
   let historyIndex = -1;
@@ -63,9 +64,6 @@
   // Called by Eia64 when execution is completed
   function execResult(content: string) {
     let sanitized = he.encode(content)
-    if (sanitized.endsWith('\n')) {
-      sanitized = sanitized.substring(0, sanitized.length - 1)
-    }
     $history = [...$history, { command: "", outputs: [sanitized], type: 1 }]
   }
 

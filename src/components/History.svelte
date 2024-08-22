@@ -11,23 +11,19 @@
             {#if type === 0}
                 <Ps1 />
                 <div class="flex">
-                    <p class="visible md:hidden">❯</p>
                     <p class="px-2">{command}</p>
                 </div>
             {/if}
             {#if type === 1}
                 {#each outputs as output}
-                    <p class="whitespace-pre">
+                    <p class="whitespace-pre" style="color: {$theme.brightGreen}">
                         {@html output}
                     </p>
                 {/each}
             {/if}
             {#if type === 2}
-                <h1 class="font-bold flex">
-                    <span style={`color: ${$theme.green}`}>&gt;</span>
-                </h1>
+                <Ps1 />
                 <div class="flex">
-                    <p class="visible md:hidden">❯</p>
                     <p class="px-2">{command}</p>
                 </div>
                 {#each outputs as output}
@@ -38,7 +34,6 @@
             {/if}
             {#if type === 3}
                 <div class="flex">
-                    <p class="visible md:hidden">❯</p>
                     <p class="px-2">{command}</p>
                 </div>
                 {#each outputs as output}
