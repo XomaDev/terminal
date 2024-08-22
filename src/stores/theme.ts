@@ -10,6 +10,12 @@ export const theme = writable<Theme>(
   ),
 );
 
+export function getTheme() {
+  return JSON.parse(
+      localStorage.getItem('colorscheme') || JSON.stringify(defaultColorscheme),
+  );
+}
+
 theme.subscribe((value) => {
   localStorage.setItem('colorscheme', JSON.stringify(value));
 });

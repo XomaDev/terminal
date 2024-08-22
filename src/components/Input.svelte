@@ -6,13 +6,13 @@
 <script lang="ts">
   import { afterUpdate, onMount } from 'svelte';
   import { history } from '../stores/history';
-  import { theme } from '../stores/theme';
-  import { commands } from '../utils/commands';
+  import { theme, getTheme } from '../stores/theme';
+  import * as he from 'he';
 
   let BANNER = `
           _____                    _____                    _____
-         /\\    \\                  /\\    \\                  /\\    \\
-        /::\\    \\                /::\\    \\                /::\\    \\
+         /\\    \\                  /\\    \\                  /\\    \\                  Project Eia64 — X
+        /::\\    \\                /::\\    \\                /::\\    \\                 UI Fork — Y
        /::::\\    \\               \\:::\\    \\              /::::\\    \\
       /::::::\\    \\               \\:::\\    \\            /::::::\\    \\
      /:::/\\:::\\    \\               \\:::\\    \\          /:::/\\:::\\    \\
@@ -32,7 +32,8 @@
         \\::/    /                \\::/    /                \\::/    /
          \\/____/                  \\/____/                  \\/____/
 
-`
+`.replace('X', `<a style="color: ${$theme.brightGreen.toString()}" href="https://github.com/XomaDev/Eia64" target="_blank">XomaDev/Eia64</a>`)
+.replace('Y', `<a style="color: ${$theme.brightGreen.toString()}" href="https://github.com/XomaDev/Terminal" target="_blank">XomaDev/Eia64</a>`)
 
   let command = '';
   let historyIndex = -1;
@@ -53,8 +54,10 @@
 
   const handleKeyDown = async (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
-      console.log(command);
-      let output = main.eia(command);
+      let output = he.encode(main.eia(command));
+      console.log(output)
+      // TODO: we need to sanitize output here, output will actually be
+      //  evaluated as HTML
       $history = [...$history, { command, outputs: [output] }];
       command = '';
     }
