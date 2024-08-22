@@ -44,7 +44,7 @@
     input.focus();
 
     if ($history.length === 0) {
-      $history = [...$history, { command: 'Welcome to Eia Playground!', outputs: [BANNER] }];
+      $history = [...$history, { command: 'Welcome to Eia Playground!', outputs: [BANNER], stdInput: false }];
     }
   });
 
@@ -54,11 +54,13 @@
 
   const handleKeyDown = async (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
-      let output = he.encode(main.eia(command));
-      console.log(output)
+      let output = main.eia(command);
+      let sanitized = output[1];
+      console.log(output[0]);
+      console.log(output[1]);
       // TODO: we need to sanitize output here, output will actually be
       //  evaluated as HTML
-      $history = [...$history, { command, outputs: [output] }];
+      $history = [...$history, { command, outputs: [sanitized], stdInput: false }];
       command = '';
     }
   };
