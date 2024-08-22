@@ -1,5 +1,5 @@
 export interface Command {
   command: string;
   outputs: string[];
-  stdInput: boolean;
+  type: number; // 0 => command, 1 => result, 2 => just prompt
 }

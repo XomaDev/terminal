@@ -8,6 +8,7 @@
   import { history } from '../stores/history';
   import { theme, getTheme } from '../stores/theme';
   import * as he from 'he';
+  import Ps1 from "./Ps1.svelte";
 
   let BANNER = `
           _____                    _____                    _____
@@ -37,6 +38,7 @@
 
   let command = '';
   let historyIndex = -1;
+  let acceptingInput = false;
 
   let input: HTMLInputElement;
 
@@ -44,7 +46,7 @@
     input.focus();
 
     if ($history.length === 0) {
-      $history = [...$history, { command: 'Welcome to Eia Playground!', outputs: [BANNER], stdInput: false }];
+      $history = [...$history, { command: 'Welcome to Eia Playground!', outputs: [BANNER], type: 3 }];
     }
   });
 
@@ -52,16 +54,38 @@
     input.scrollIntoView({ behavior: 'smooth', block: 'end' });
   });
 
+  // Called by Eia64 when user input is required
+  function inputRequired() {
+    console.log("Input required called!")
+    acceptingInput = true;
+  }
+
+  // Called by Eia64 when execution is completed
+  function execResult(content: string) {
+    let sanitized = he.encode(content)
+    if (sanitized.endsWith('\n')) {
+      sanitized = sanitized.substring(0, sanitized.length - 1)
+    }
+    $history = [...$history, { command: "", outputs: [sanitized], type: 1 }]
+  }
+
+  (window as any).inputRequired = inputRequired;
+  (window as any).execResult = execResult;
+
   const handleKeyDown = async (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
-      let output = main.eia(command);
-      let sanitized = output[1];
-      console.log(output[0]);
-      console.log(output[1]);
-      // TODO: we need to sanitize output here, output will actually be
-      //  evaluated as HTML
-      $history = [...$history, { command, outputs: [sanitized], stdInput: false }];
-      command = '';
+      if (acceptingInput) {
+        // print the symbol and user input
+        $history = [...$history, { command, outputs: [], type: 2 }]
+        main.stdInput(command)
+        acceptingInput = false;
+        command = '';
+      } else {
+        // print the command
+        $history = [...$history, { command, outputs: [], type: 0 }]
+        main.eia(command);
+        command = '';
+      }
     }
   };
 </script>
@@ -71,6 +95,15 @@
     input.focus();
   }}
 />
+
+{#if !acceptingInput}
+  <Ps1/>
+{/if}
+{#if acceptingInput}
+  <h1 class="font-bold flex">
+    <span style={`color: ${$theme.green}`}>&gt;</span>
+  </h1>
+{/if}
 
 <div class="flex w-full">
   <p class="visible md:hidden">❯</p>

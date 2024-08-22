@@ -23,8 +23,6 @@
   <History />
 
   <div class="flex flex-col md:flex-row">
-    <Ps1 />
-
     <Input />
   </div>
 </main>
