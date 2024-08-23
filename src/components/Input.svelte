@@ -62,13 +62,13 @@
   }
 
   // Called by Eia64 when execution is completed
-  function execResult(content: string) {
+  function stdOutLn(content: string) {
     let sanitized = he.encode(content)
     $history = [...$history, { command: "", outputs: [sanitized], type: 1 }]
   }
 
   (window as any).inputRequired = inputRequired;
-  (window as any).execResult = execResult;
+  (window as any).stdOutLn = stdOutLn;
 
   const handleKeyDown = async (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
