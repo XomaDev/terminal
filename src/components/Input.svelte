@@ -7,8 +7,10 @@
   import { afterUpdate, onMount } from 'svelte';
   import { history } from '../stores/history';
   import { theme, getTheme } from '../stores/theme';
+  import { encode } from 'html-entities';
   import * as he from 'he';
   import Ps1 from "./Ps1.svelte";
+  import {sendCode} from "../eia";
 
   let BANNER = `
           _____                    _____                    _____
@@ -62,26 +64,43 @@
   }
 
   // Called by Eia64 when execution is completed
-  function stdOutLn(content: string) {
-    let sanitized = he.encode(content)
-    $history = [...$history, { command: "", outputs: [sanitized], type: 1 }]
+  function messageReceived(content: string) {
+    const json = JSON.parse(content);
+    let type = json.type;
+    if (type === "output") {
+        let message = json.message;
+        let sanitized = he.encode(message)
+        $history = [...$history, { command: "", outputs: [sanitized], type: 1 }]
+    } else if (type === "input") {
+        // that means it's currently requiring input
+        // TODO: for later
+        acceptingInput = true;
+    } else if (type == "error") {
+        let message = json.message;
+        let sanitized = he.encode(message)
+        $history = [...$history, { command: "", outputs: [sanitized], type: 0 }]
+    }
   }
 
   (window as any).inputRequired = inputRequired;
-  (window as any).stdOutLn = stdOutLn;
+  (window as any).messageReceived = messageReceived;
 
   const handleKeyDown = async (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
       if (acceptingInput) {
         // print the symbol and user input
         $history = [...$history, { command, outputs: [], type: 2 }]
-        main.stdInput(command)
+        //main.stdInput(command)
         acceptingInput = false;
         command = '';
       } else {
-        // print the command
-        $history = [...$history, { command, outputs: [], type: 0 }]
-        main.eia(command);
+        let trimmed = command.trim()
+        $history = [...$history, { command, outputs: [], type: -1 }]
+        if (trimmed.length > 0) {
+          // print the command
+          //main.eia(command);
+          sendCode(trimmed)
+        }
         command = '';
       }
     }

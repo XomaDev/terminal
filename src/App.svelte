@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Ps1 from './components/Ps1.svelte';
   import Input from './components/Input.svelte';
   import History from './components/History.svelte';
   import { theme } from './stores/theme';

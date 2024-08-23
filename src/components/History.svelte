@@ -8,11 +8,18 @@
     <div style={`color: ${$theme.foreground}`}>
         <div class="flex flex-col md:flex-row">
 
-            {#if type === 0}
+            {#if type === -1}
                 <Ps1 />
                 <div class="flex">
-                    <p class="px-2">{command}</p>
+                    <p class="px-2" style="white-space: pre;">{command}</p>
                 </div>
+            {/if}
+            {#if type === 0}
+                {#each outputs as output}
+                    <p class="whitespace-pre" style="color: {$theme.brightRed}">
+                        {@html output}
+                    </p>
+                {/each}
             {/if}
             {#if type === 1}
                 {#each outputs as output}
