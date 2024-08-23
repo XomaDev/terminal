@@ -1,7 +1,7 @@
 let socket: WebSocket | null = null
 
 export function startWebSocket() {
-    socket = new WebSocket('ws://localhost:9191');
+    socket = new WebSocket('wss://eiax.themelon.space');
     socket.onopen = function (event) {
         console.log("Eia Web Socket connected")
     };
