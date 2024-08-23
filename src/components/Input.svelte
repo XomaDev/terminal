@@ -6,8 +6,7 @@
 <script lang="ts">
   import { afterUpdate, onMount } from 'svelte';
   import { history } from '../stores/history';
-  import { theme, getTheme } from '../stores/theme';
-  import { encode } from 'html-entities';
+  import { theme } from '../stores/theme';
   import * as he from 'he';
   import Ps1 from "./Ps1.svelte";
   import {sendCode} from "../eia";
@@ -47,10 +46,7 @@
 
   onMount(() => {
     input.focus();
-
-    if ($history.length === 0) {
-      $history = [...$history, { command: 'Welcome to Eia Playground!', outputs: [BANNER], type: 3 }];
-    }
+    $history = [{ command: 'Welcome to Eia Playground!', outputs: [BANNER], type: 3 }];
   });
 
   afterUpdate(() => {
@@ -72,13 +68,22 @@
         let sanitized = he.encode(message)
         $history = [...$history, { command: "", outputs: [sanitized], type: 1 }]
     } else if (type === "input") {
-        // that means it's currently requiring input
-        // TODO: for later
+        input.focus();
+        // unlock textbox for user to input text
+        console.log("Seeking input");
+        input.disabled = false;
         acceptingInput = true;
     } else if (type == "error") {
         let message = json.message;
         let sanitized = he.encode(message)
         $history = [...$history, { command: "", outputs: [sanitized], type: 0 }]
+        input.disabled = false; // enable it after errors for fresh input
+    } else if (type == "wait") {
+        // currently executing... we have to switch of textbox
+        input.disabled = true;
+    } else if (type == "executed") {
+        input.focus();
+        input.disabled = false;
     }
   }
 
@@ -87,19 +92,22 @@
 
   const handleKeyDown = async (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
+       console.log("new enter " + acceptingInput);
       if (acceptingInput) {
-        // print the symbol and user input
-        $history = [...$history, { command, outputs: [], type: 2 }]
-        //main.stdInput(command)
+        $history = [...$history, { command, outputs: [], type: 2 }];
+        sendCode(JSON.stringify(
+            {'type': 'input', 'message': command}
+        ))
         acceptingInput = false;
         command = '';
+        input.disabled = true;
       } else {
         let trimmed = command.trim()
-        $history = [...$history, { command, outputs: [], type: -1 }]
+        $history = [...$history, { command, outputs: [], type: -1 }];
         if (trimmed.length > 0) {
-          // print the command
-          //main.eia(command);
-          sendCode(trimmed)
+            sendCode(JSON.stringify(
+                {'type': 'code', 'message': trimmed}
+            ))
         }
         command = '';
       }
