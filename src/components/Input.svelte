@@ -40,7 +40,6 @@
 
   let command = '';
   let historyIndex = -1;
-  let acceptingInput = false;
 
   let input: HTMLInputElement;
 
@@ -53,12 +52,6 @@
     input.scrollIntoView({ behavior: 'smooth', block: 'end' });
   });
 
-  // Called by Eia64 when user input is required
-  function inputRequired() {
-    console.log("Input required called!")
-    acceptingInput = true;
-  }
-
   // Called by Eia64 when execution is completed
   function messageReceived(content: string) {
     const json = JSON.parse(content);
@@ -68,11 +61,10 @@
         let sanitized = he.encode(message)
         $history = [...$history, { command: "", outputs: [sanitized], type: 1 }]
     } else if (type === "input") {
-        input.focus();
         // unlock textbox for user to input text
         console.log("Seeking input");
         input.disabled = false;
-        acceptingInput = true;
+        input.focus();
     } else if (type == "error") {
         let message = json.message;
         let sanitized = he.encode(message)
@@ -82,35 +74,20 @@
         // currently executing... we have to switch of textbox
         input.disabled = true;
     } else if (type == "executed") {
-        input.focus();
         input.disabled = false;
+        input.focus();
     }
   }
-
-  (window as any).inputRequired = inputRequired;
   (window as any).messageReceived = messageReceived;
 
   const handleKeyDown = async (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
-       console.log("new enter " + acceptingInput);
-      if (acceptingInput) {
-        $history = [...$history, { command, outputs: [], type: 2 }];
-        sendCode(JSON.stringify(
-            {'type': 'input', 'message': command}
-        ))
-        acceptingInput = false;
-        command = '';
-        input.disabled = true;
-      } else {
-        let trimmed = command.trim()
-        $history = [...$history, { command, outputs: [], type: -1 }];
-        if (trimmed.length > 0) {
-            sendCode(JSON.stringify(
-                {'type': 'code', 'message': trimmed}
-            ))
-        }
-        command = '';
+      let trimmed = command.trim()
+      $history = [...$history, { command, outputs: [], type: -1 }];
+      if (trimmed.length > 0) {
+        sendCode(command)
       }
+      command = '';
     }
   };
 </script>
@@ -121,14 +98,7 @@
   }}
 />
 
-{#if !acceptingInput}
-  <Ps1/>
-{/if}
-{#if acceptingInput}
-  <h1 class="font-bold flex">
-    <span style={`color: ${$theme.green}`}>&gt;</span>
-  </h1>
-{/if}
+<Ps1/>
 
 <div class="flex w-full">
   <p class="visible md:hidden">❯</p>
