@@ -1,7 +1,7 @@
 let socket: WebSocket | null = null
 
 export function startWebSocket() {
-    socket = new WebSocket('ws://ekita.hackclub.app');
+    socket = new WebSocket('wss://ekita.hackclub.app');
     socket.onopen = function (event) {
         console.log("Eia Web Socket connected")
     };
