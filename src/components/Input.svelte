@@ -8,30 +8,37 @@
 
   let BANNER = `
           _____                    _____                    _____
-         /\\    \\                  /\\    \\                  /\\    \\                  Eia64 — 2.3
-        /::\\    \\                /::\\    \\                /::\\    \\                 An interpreted language
-       /::::\\    \\               \\:::\\    \\              /::::\\    \\
-      /::::::\\    \\               \\:::\\    \\            /::::::\\    \\               [X] [Docs] [Web client]
-     /:::/\\:::\\    \\               \\:::\\    \\          /:::/\\:::\\    \\
-    /:::/__\\:::\\    \\               \\:::\\    \\        /:::/__\\:::\\    \\             Ctrl+X to clear syntax buffer
-   /::::\\   \\:::\\    \\              /::::\\    \\      /::::\\   \\:::\\    \\            Ctrl+E to run an example
-  /::::::\\   \\:::\\    \\    ____    /::::::\\    \\    /::::::\\   \\:::\\    \\
- /:::/\\:::\\   \\:::\\    \\  /\\   \\  /:::/\\:::\\    \\  /:::/\\:::\\   \\:::\\    \\          5-min session
+         /\\    \\                  /\\    \\                  /\\    \\                  Eia64 — 2.3                      |  Ctrl+X to clear syntax buffer
+        /::\\    \\                /::\\    \\                /::\\    \\                 An interpreted language          |  Ctrl+E to run a file
+       /::::\\    \\               \\:::\\    \\              /::::\\    \\                                                 |
+      /::::::\\    \\               \\:::\\    \\            /::::::\\    \\               [XX] [Docs] [Web client]    |
+     /:::/\\:::\\    \\               \\:::\\    \\          /:::/\\:::\\    \\              !===~~===~~===~~===~~===~~===~~===
+    /:::/__\\:::\\    \\               \\:::\\    \\        /:::/__\\:::\\    \\
+   /::::\\   \\:::\\    \\              /::::\\    \\      /::::\\   \\:::\\    \\            Examples ✨
+  /::::::\\   \\:::\\    \\    ____    /::::::\\    \\    /::::::\\   \\:::\\    \\                1. (> ^_^)> cute trash guy animation
+ /:::/\\:::\\   \\:::\\    \\  /\\   \\  /:::/\\:::\\    \\  /:::/\\:::\\   \\:::\\    \\               2. Rock Paper Scissor
 /:::/__\\:::\\   \\:::\\____\\/::\\   \\/:::/  \\:::\\____\\/:::/  \\:::\\   \\:::\\____\\
 \\:::\\   \\:::\\   \\::/    /\\:::\\  /:::/    \\::/    /\\::/    \\:::\\  /:::/    /
  \\:::\\   \\:::\\   \\/____/  \\:::\\/:::/    / \\/____/  \\/____/ \\:::\\/:::/    /
   \\:::\\   \\:::\\    \\       \\::::::/    /                    \\::::::/    /
    \\:::\\   \\:::\\____\\       \\::::/____/                      \\::::/    /
     \\:::\\   \\::/    /        \\:::\\    \\                      /:::/    /
-     \\:::\\   \\/____/          \\:::\\    \\                    /:::/    /
+     \\:::\\   \\/____/          \\:::\\    \\                    /:::/    /              Max 1 min/execution
       \\:::\\    \\               \\:::\\    \\                  /:::/    /
        \\:::\\____\\               \\:::\\____\\                /:::/    /
         \\::/    /                \\::/    /                \\::/    /
          \\/____/                  \\/____/                  \\/____/
 
-`.replace('X', `<a style="color: ${$theme.brightGreen.toString()}" href="https://github.com/XomaDev/Eia64" target="_blank">Project</a>`)
+`
+.replace('Eia64 — 2.3', `<a style="color: ${$theme.cyan.toString()}">Eia64 — 2.3</a>`)
+.replace('An interpreted language', `<a style="color: ${$theme.blue.toString()}">An interpreted language</a>`)
+.replace('XX', `<a style="color: ${$theme.brightGreen.toString()}" href="https://github.com/XomaDev/Eia64" target="_blank">Project</a>`)
 .replace('Docs', `<a style="color: ${$theme.brightGreen.toString()}" href="https://eia-docs.vercel.app/" target="_blank">Docs</a>`)
 .replace('Web client', `<a style="color: ${$theme.brightGreen.toString()}" href="https://github.com/XomaDev/Terminal" target="_blank">Web client</a>`)
+.replace('(> ^_^)>', `<a style="color: ${$theme.brightBlue.toString()}" href="${window.location.origin}?fileUrl=https://raw.githubusercontent.com/XomaDev/Eia64/main/examples/animation.eia">(> ^_^)></a>`)
+.replace('cute trash guy animation', `<a style="color: ${$theme.cyan.toString()}" href="${window.location.origin}?fileUrl=https://raw.githubusercontent.com/XomaDev/Eia64/main/examples/animation.eia">cute trash guy animation</a>`)
+.replace('Rock Paper Scissor', `<a style="color: ${$theme.green.toString()}" href="${window.location.origin}?fileUrl=https://raw.githubusercontent.com/XomaDev/Eia64/main/examples/RockPaperScissor.eia">Rock Paper Scissor</a>`)
+.replace('Max 1 min/execution', `<a style="color: ${$theme.brightRed.toString()}">Max 1 min/execution</a>`)
 
   let command = '';
   let historyIndex = -1;
@@ -40,7 +47,30 @@
 
   onMount(() => {
     input.focus();
-    $history = [{ command: 'Welcome to Eia Playground!', outputs: [BANNER], type: 3 }];
+    $history = [{ command: 'Welcome to Eia Playground!', outputs: [], type: -2 }];
+    $history = [{ ...$history, command: '', outputs: [BANNER], type: -3 }];
+
+    document.addEventListener('keydown', (event) => {
+      if (event.ctrlKey) {
+        if (event.key === 's' || event.key === 'S') {
+          // Ctrl+S for clearing syntax buffer
+          console.log('Ctrl+B was pressed');
+          // send a clear content request
+          sendCode(JSON.stringify({"type": "clear", "content": ""}));
+          input.disabled = false; // re-enable input
+        }
+
+        if (event.key === 'e' || event.key === 'E') {
+          // Ctrl+E to run a file
+          console.log('Ctrl+E was pressed');
+          const fileUrl = prompt('Enter a Raw File URL ');
+          if (fileUrl != null) {
+            const newUrl = window.location.origin + "?fileUrl=" + fileUrl
+            window.location.replace(newUrl);
+          }
+        }
+      }
+    });
   });
 
   afterUpdate(() => {

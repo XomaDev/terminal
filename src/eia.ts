@@ -1,4 +1,4 @@
-export let EIA_ENDPOINT = "ekita.hackclub.app";
+export let EIA_ENDPOINT = "aekita.hackclub.app";
 
 let socket: WebSocket | null = null
 
