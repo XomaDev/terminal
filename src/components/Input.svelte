@@ -16,7 +16,7 @@
     /:::/__\\:::\\    \\               \\:::\\    \\        /:::/__\\:::\\    \\             Ctrl+X to clear syntax buffer
    /::::\\   \\:::\\    \\              /::::\\    \\      /::::\\   \\:::\\    \\            Ctrl+E to run an example
   /::::::\\   \\:::\\    \\    ____    /::::::\\    \\    /::::::\\   \\:::\\    \\
- /:::/\\:::\\   \\:::\\    \\  /\\   \\  /:::/\\:::\\    \\  /:::/\\:::\\   \\:::\\    \\
+ /:::/\\:::\\   \\:::\\    \\  /\\   \\  /:::/\\:::\\    \\  /:::/\\:::\\   \\:::\\    \\          5-min session
 /:::/__\\:::\\   \\:::\\____\\/::\\   \\/:::/  \\:::\\____\\/:::/  \\:::\\   \\:::\\____\\
 \\:::\\   \\:::\\   \\::/    /\\:::\\  /:::/    \\::/    /\\::/    \\:::\\  /:::/    /
  \\:::\\   \\:::\\   \\/____/  \\:::\\/:::/    / \\/____/  \\/____/ \\:::\\/:::/    /
@@ -89,11 +89,9 @@
       let trimmed = command.trim()
       $history = [...$history, { command, outputs: [], type: -1 }];
       if (trimmed.length > 0) {
-        console.log(JSON.stringify({"type": "code", "data": command}));
         sendCode(JSON.stringify({"type": "code", "data": command}));
       }
       command = '';
-      if (!input.disabled) input.disabled = true;
     }
   };
 </script>
