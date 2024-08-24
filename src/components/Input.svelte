@@ -13,8 +13,8 @@
        /::::\\    \\               \\:::\\    \\              /::::\\    \\
       /::::::\\    \\               \\:::\\    \\            /::::::\\    \\               [X] [Docs] [Web client]
      /:::/\\:::\\    \\               \\:::\\    \\          /:::/\\:::\\    \\
-    /:::/__\\:::\\    \\               \\:::\\    \\        /:::/__\\:::\\    \\
-   /::::\\   \\:::\\    \\              /::::\\    \\      /::::\\   \\:::\\    \\
+    /:::/__\\:::\\    \\               \\:::\\    \\        /:::/__\\:::\\    \\             Ctrl+X to clear syntax buffer
+   /::::\\   \\:::\\    \\              /::::\\    \\      /::::\\   \\:::\\    \\            Ctrl+E to run an example
   /::::::\\   \\:::\\    \\    ____    /::::::\\    \\    /::::::\\   \\:::\\    \\
  /:::/\\:::\\   \\:::\\    \\  /\\   \\  /:::/\\:::\\    \\  /:::/\\:::\\   \\:::\\    \\
 /:::/__\\:::\\   \\:::\\____\\/::\\   \\/:::/  \\:::\\____\\/:::/  \\:::\\   \\:::\\____\\
@@ -58,9 +58,9 @@
     const json = JSON.parse(content);
     let type = json.type;
     if (type === "output") {
-        let message = json.message;
-        let sanitized = he.encode(message)
-        $history = [...$history, { command: "", outputs: [sanitized], type: 1 }]
+        let message = json.message.replace(/\u001B\[[0-9;]*[a-zA-Z]/g, "");
+        // let sanitized = he.encode(message)
+        $history = [...$history, { command: "", outputs: [message], type: 1 }]
     } else if (type === "input") {
         // unlock textbox for user to input text
         console.log("Seeking input");
@@ -89,9 +89,11 @@
       let trimmed = command.trim()
       $history = [...$history, { command, outputs: [], type: -1 }];
       if (trimmed.length > 0) {
-        sendCode(command)
+        console.log(JSON.stringify({"type": "code", "data": command}));
+        sendCode(JSON.stringify({"type": "code", "data": command}));
       }
       command = '';
+      if (!input.disabled) input.disabled = true;
     }
   };
 </script>

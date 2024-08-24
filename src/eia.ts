@@ -2,11 +2,12 @@ export let EIA_ENDPOINT = "ekita.hackclub.app";
 
 let socket: WebSocket | null = null
 
-export function startWebSocket() {
+export function startWebSocket(onConnectedCallback: Function) {
     socket = new WebSocket('wss://' + EIA_ENDPOINT);
     socket.onopen = function (event) {
         console.log("Eia Web Socket connected")
         eiaConnected();
+        onConnectedCallback(event);
     };
 
     socket.onmessage = function (event) {
@@ -24,5 +25,6 @@ export function startWebSocket() {
 }
 
 export function sendCode(code: string) {
+    console.log("Sending: " + code);
     socket.send(code);
 }
