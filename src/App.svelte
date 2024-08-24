@@ -16,8 +16,12 @@
 </svelte:head>
 
 <main
-  class="h-full border-2 rounded-md p-4 overflow-auto text-xs sm:text-sm md:text-base"
-  style={`background-color: ${$theme.background}; color: ${$theme.foreground}; border-color: ${$theme.green};`}
+        class="h-full border-2 rounded-md p-4 overflow-auto text-xs sm:text-sm md:text-base"
+        style={`
+    background: linear-gradient(135deg, ${$theme.background}, ${$theme.backgroundSecond});
+    color: ${$theme.foreground};
+    border-color: ${$theme.green};
+  `}
 >
   <History />
 

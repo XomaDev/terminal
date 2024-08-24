@@ -50,6 +50,7 @@
   // Called by eia.ts when the server is connected
   function eiaConnected() {
     $history = [...$history, { command: '', outputs: ["Connected to Eia Server (" + EIA_ENDPOINT + ")"], type: 1 }];
+    $history = [...$history, { command: '', outputs: ["Try out `println(\"Hello, World\")`"], type: 4 }];
   }
 
   // Called by eia.ts when execution is completed

@@ -18,5 +18,6 @@ export interface Theme {
   brightWhite: string;
   foreground: string;
   background: string;
+  backgroundSecond: string;
   cursorColor: string;
 }
