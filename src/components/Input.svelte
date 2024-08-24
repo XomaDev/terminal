@@ -1,22 +1,17 @@
-<script context="module" lang="ts">
-  // Declarations that are at the module level, like `declare`
-  declare const main: any;
-</script>
-
 <script lang="ts">
   import { afterUpdate, onMount } from 'svelte';
   import { history } from '../stores/history';
   import { theme } from '../stores/theme';
   import * as he from 'he';
   import Ps1 from "./Ps1.svelte";
-  import {sendCode} from "../eia";
+  import {EIA_ENDPOINT, sendCode} from "../eia";
 
   let BANNER = `
           _____                    _____                    _____
          /\\    \\                  /\\    \\                  /\\    \\                  Eia64 — 2.3
         /::\\    \\                /::\\    \\                /::\\    \\                 An interpreted language
        /::::\\    \\               \\:::\\    \\              /::::\\    \\
-      /::::::\\    \\               \\:::\\    \\            /::::::\\    \\               [X] [Docs] [UI fork]
+      /::::::\\    \\               \\:::\\    \\            /::::::\\    \\               [X] [Docs] [Web client]
      /:::/\\:::\\    \\               \\:::\\    \\          /:::/\\:::\\    \\
     /:::/__\\:::\\    \\               \\:::\\    \\        /:::/__\\:::\\    \\
    /::::\\   \\:::\\    \\              /::::\\    \\      /::::\\   \\:::\\    \\
@@ -35,8 +30,8 @@
          \\/____/                  \\/____/                  \\/____/
 
 `.replace('X', `<a style="color: ${$theme.brightGreen.toString()}" href="https://github.com/XomaDev/Eia64" target="_blank">Project</a>`)
-.replace('Docs', `<a style="color: ${$theme.brightGreen.toString()}" href="https://eia.themelon.space" target="_blank">Docs</a>`)
-.replace('UI fork', `<a style="color: ${$theme.brightGreen.toString()}" href="https://github.com/XomaDev/Terminal" target="_blank">UI fork</a>`)
+.replace('Docs', `<a style="color: ${$theme.brightGreen.toString()}" href="https://eia-docs.vercel.app/" target="_blank">Docs</a>`)
+.replace('Web client', `<a style="color: ${$theme.brightGreen.toString()}" href="https://github.com/XomaDev/Terminal" target="_blank">Web client</a>`)
 
   let command = '';
   let historyIndex = -1;
@@ -52,7 +47,12 @@
     input.scrollIntoView({ behavior: 'smooth', block: 'end' });
   });
 
-  // Called by Eia64 when execution is completed
+  // Called by eia.ts when the server is connected
+  function eiaConnected() {
+    $history = [...$history, { command: '', outputs: ["Connected to Eia Server (" + EIA_ENDPOINT + ")"], type: 1 }];
+  }
+
+  // Called by eia.ts when execution is completed
   function messageReceived(content: string) {
     const json = JSON.parse(content);
     let type = json.type;
@@ -78,6 +78,9 @@
         input.focus();
     }
   }
+
+
+  (window as any).eiaConnected = eiaConnected;
   (window as any).messageReceived = messageReceived;
 
   const handleKeyDown = async (event: KeyboardEvent) => {
@@ -101,8 +104,6 @@
 <Ps1/>
 
 <div class="flex w-full">
-  <p class="visible md:hidden">❯</p>
-
   <input
     id="command-input"
     name="command-input"

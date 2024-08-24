@@ -6,8 +6,7 @@
 
 {#each $history as { command, outputs, type }}
     <div style={`color: ${$theme.foreground}`}>
-        <div class="flex flex-col md:flex-row">
-
+        <div class="flex flex-row">
             {#if type === -1}
                 <Ps1 />
                 <div class="flex">
