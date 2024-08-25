@@ -8,9 +8,9 @@
 
   let BANNER = `
           _____                    _____                    _____
-         /\\    \\                  /\\    \\                  /\\    \\                  Eia64 — 2.3                      |  Ctrl+X to clear syntax buffer
+         /\\    \\                  /\\    \\                  /\\    \\                  Eia64 — 2.3                      |  Ctrl+X to clear syntax buff
         /::\\    \\                /::\\    \\                /::\\    \\                 An interpreted language          |  Ctrl+E to run a file
-       /::::\\    \\               \\:::\\    \\              /::::\\    \\                                                 |
+       /::::\\    \\               \\:::\\    \\              /::::\\    \\                                                 |  Ctrl+M to clear screen
       /::::::\\    \\               \\:::\\    \\            /::::::\\    \\               [XX] [Docs] [Web client]    |
      /:::/\\:::\\    \\               \\:::\\    \\          /:::/\\:::\\    \\              !===~~===~~===~~===~~===~~===~~===
     /:::/__\\:::\\    \\               \\:::\\    \\        /:::/__\\:::\\    \\
@@ -68,6 +68,10 @@
             const newUrl = window.location.origin + "?fileUrl=" + fileUrl
             window.location.replace(newUrl);
           }
+        }
+
+        if (event.key === 'm' || event.key === 'M') {
+          $history = [];
         }
       }
     });
