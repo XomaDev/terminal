@@ -21,6 +21,7 @@ export function startWebSocket(onConnectedCallback: Function) {
 
     socket.onclose = function (event) {
         console.log('WebSocket is closed:', event);
+        eiaDisconnected();
     };
 }
 

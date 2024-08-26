@@ -84,7 +84,11 @@
   // Called by eia.ts when the server is connected
   function eiaConnected() {
     $history = [...$history, { command: '', outputs: ["Connected to Eia Server (" + EIA_ENDPOINT + ")"], type: 1 }];
-    $history = [...$history, { command: '', outputs: ["Try out `println(\"Hello, World\")`"], type: 4 }];
+  }
+
+  // called by eia.ts when the server is disconnected
+  function eiaDisconnected() {
+    $history = [...$history, { command: '', outputs: ["Disconnected from Eia Server"], type: 0 }];
   }
 
   // Called by eia.ts when execution is completed
@@ -116,6 +120,7 @@
 
 
   (window as any).eiaConnected = eiaConnected;
+  (window as any).eiaDisconnected = eiaDisconnected;
   (window as any).messageReceived = messageReceived;
 
   const handleKeyDown = async (event: KeyboardEvent) => {
