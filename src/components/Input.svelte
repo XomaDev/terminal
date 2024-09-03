@@ -75,15 +75,20 @@
         }
       }
     });
+    eiaConnecting()
   });
 
   afterUpdate(() => {
     input.scrollIntoView({ behavior: 'smooth', block: 'end' });
   });
 
+  function eiaConnecting() {
+    $history = [...$history, { command: '', outputs: ["Connecting to Eia Server (" + EIA_ENDPOINT + ")"], type: 1 }];
+  }
+
   // Called by eia.ts when the server is connected
   function eiaConnected() {
-    $history = [...$history, { command: '', outputs: ["Connected to Eia Server (" + EIA_ENDPOINT + ")"], type: 1 }];
+    $history = [...$history, { command: '', outputs: ["Connected"], type: 1 }];
   }
 
   // called by eia.ts when the server is disconnected
@@ -122,6 +127,7 @@
   (window as any).eiaConnected = eiaConnected;
   (window as any).eiaDisconnected = eiaDisconnected;
   (window as any).messageReceived = messageReceived;
+  (window as any).eiaConnecting = eiaConnecting;
 
   const handleKeyDown = async (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
